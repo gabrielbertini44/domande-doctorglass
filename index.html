@@ -181,7 +181,7 @@ footer { color: var(--muted); font-size: 0.82rem; padding-block: 0 2.5rem; }
   <h1>Domande per il titolare</h1>
   <p>Queste scelte servono prima di usare il gestionale in officina. Nessuna blocca il lavoro: dove c'è una <strong>proposta</strong>, è quella che usiamo finché non risponde.</p>
   <div class="how">
-    <p><strong>Come rispondere:</strong> tocchi la risposta giusta, oppure scriva due righe nella nota. Se non lo sa, lo scriva nella nota.</p>
+    <p><strong>Come rispondere:</strong> tocchi la risposta giusta (toccandola di nuovo si toglie), oppure scriva due righe nella nota. Se non lo sa, lo scriva nella nota.</p>
     <p><strong>Alla fine:</strong> in fondo alla pagina c'è «Copia le risposte»; poi le incolli in un messaggio (WhatsApp o email) a chi cura il gestionale.</p>
     <p class="urgenti">Le più urgenti: <a href="#d29">29</a>, <a href="#d30">30</a> e <a href="#d31">31</a> (decidono come si installa il computer dell'officina).</p>
   </div>
@@ -294,6 +294,17 @@ function renderQ(q) {
         });
         lbl.append(d);
       }
+      // Toccare di nuovo la risposta già scelta la toglie
+      radio.addEventListener('click', () => {
+        if (radio.dataset.was === '1') {
+          radio.checked = false; radio.dataset.was = '';
+          delete state.scelte[n]; save();
+          fs.querySelectorAll('.detail').forEach((x) => { x.hidden = true; });
+          refresh();
+        }
+      });
+      lab.addEventListener('pointerdown', () => { radio.dataset.was = radio.checked ? '1' : ''; });
+      lab.addEventListener('keydown', () => { radio.dataset.was = ''; });
       radio.addEventListener('change', () => {
         state.scelte[n] = i; save();
         fs.querySelectorAll('.detail').forEach((x) => { x.hidden = x.id !== `det-${n}-${i}`; });
@@ -314,7 +325,11 @@ function renderQ(q) {
       const lab = el('label', { for: id });
       const r = el('input', { type: 'radio', name: 'x' + n, id, value: i });
       r.checked = state.extra[n] === i;
-      r.addEventListener('change', () => { state.extra[n] = i; save(); });
+      lab.addEventListener('pointerdown', () => { r.dataset.was = r.checked ? '1' : ''; });
+      r.addEventListener('click', () => {
+        if (r.dataset.was === '1') { r.checked = false; r.dataset.was = ''; delete state.extra[n]; save(); refresh(); }
+      });
+      r.addEventListener('change', () => { state.extra[n] = i; save(); refresh(); });
       lab.append(r, document.createTextNode(o));
       sub.append(lab);
     });
