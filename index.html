@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Domande per il titolare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Un modulo da compilare, come i fogli dell'officina: una colonna, domande numerate, la proposta in evidenza */
+:root {
+  --bg: #f4f5f9;
+  --panel: #ffffff;
+  --ink: #141a2e;
+  --muted: #5b6278;
+  --line: #e1e4ee;
+  --brand: #212a87;
+  --brand-ink: #ffffff;
+  --brand-soft: #e9ebf8;
+  --urgent: #a64600;
+  --urgent-soft: #fff0e3;
+  --ok: #1f6b3a;
+  --ok-soft: #e4f3ea;
+  --font: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1220; --panel: #171b2e; --ink: #e7e9f2; --muted: #a0a6bd; --line: #2b3152;
+    --brand: #9aa2f5; --brand-ink: #10132a; --brand-soft: #232852;
+    --urgent: #f3a35f; --urgent-soft: #3a2412; --ok: #74d39b; --ok-soft: #16301f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1220; --panel: #171b2e; --ink: #e7e9f2; --muted: #a0a6bd; --line: #2b3152;
+  --brand: #9aa2f5; --brand-ink: #10132a; --brand-soft: #232852;
+  --urgent: #f3a35f; --urgent-soft: #3a2412; --ok: #74d39b; --ok-soft: #16301f;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--panel);
+}
+.wrap {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--brand); }
+button, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+/* ------------------------------------------------ testata */
+.head { padding-block: 2rem 1.25rem; display: grid; gap: 0.75rem; }
+.eyebrow {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.eyebrow::before { content: ""; width: 10px; height: 10px; border-radius: 2px; background: #e21c2b; }
+.head h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 700; letter-spacing: -0.01em; }
+.head p { color: var(--muted); max-width: 40rem; }
+.how { display: grid; gap: 0.4rem; padding: 0.9rem 1rem; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.how strong { color: var(--ink); }
+.urgenti { color: var(--urgent); font-weight: 600; }
+
+/* ------------------------------------------------ barra in alto */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.bar .wrap { display: flex; align-items: center; gap: 1rem; padding-block: 0.6rem; }
+.progress { flex: 1; min-width: 0; display: grid; gap: 0.3rem; }
+.progress-label { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.progress-label b { color: var(--ink); }
+.track { height: 6px; border-radius: 99px; background: var(--brand-soft); overflow: hidden; }
+.fill { height: 100%; width: 0; background: var(--brand); border-radius: 99px; transition: width 0.25s ease; }
+.btn {
+  border: 0; border-radius: 8px; padding: 0.6rem 1rem; min-height: 44px; cursor: pointer; font-weight: 600;
+  background: var(--brand); color: var(--brand-ink); white-space: nowrap;
+}
+.btn.secondary { background: transparent; color: var(--brand); border: 1px solid var(--line); }
+.btn:hover { filter: brightness(1.08); }
+
+/* ------------------------------------------------ sezioni e domande */
+main { display: grid; gap: 2rem; padding-block: 1.5rem 3rem; }
+section { display: grid; gap: 1rem; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding-top: 0.5rem; border-top: 2px solid var(--ink); }
+.sec-head h2 { font-size: 1.15rem; font-weight: 700; }
+.sec-count { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sec-intro { color: var(--muted); font-size: 0.95rem; }
+
+.q {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.1rem 1.15rem; display: grid; gap: 0.75rem; scroll-margin-top: 5rem;
+}
+.q.done { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+.q-top { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.6rem; align-items: start; }
+.q-num {
+  font-family: var(--mono); font-weight: 600; font-size: 0.95rem; text-align: center;
+  border: 1.5px solid var(--ink); border-radius: 6px; padding: 0.1rem 0; line-height: 1.6;
+}
+.q.done .q-num { background: var(--ok); border-color: var(--ok); color: var(--panel); }
+.q-title { font-weight: 600; font-size: 1.02rem; }
+.badge {
+  display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.5rem; border-radius: 99px; vertical-align: 2px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  background: var(--urgent-soft); color: var(--urgent);
+}
+.q-body { display: grid; gap: 0.6rem; }
+.q-body p { color: var(--ink); font-size: 0.95rem; }
+.q-body p.soft { color: var(--muted); }
+.proposal {
+  background: var(--brand-soft); border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.95rem;
+}
+.proposal b { display: block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brand); }
+
+.opts { display: grid; gap: 0.45rem; border: 0; padding: 0; margin: 0; }
+.opt {
+  display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0.6rem; align-items: start;
+  padding: 0.65rem 0.75rem; border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+.opt:hover { border-color: var(--brand); }
+.opt input[type="radio"] { margin: 0.2rem 0 0; width: 1.1rem; height: 1.1rem; accent-color: var(--brand); }
+.opt:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); }
+.opt .lbl { min-width: 0; }
+.detail, .free, .note textarea, .obiezioni {
+  width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 0.55rem 0.7rem; background: var(--bg);
+}
+.detail { display: block; margin-top: 0.5rem; }
+.free-row { display: flex; align-items: center; gap: 0.6rem; }
+.free-row .free { max-width: 10rem; }
+textarea { resize: vertical; min-height: 2.6rem; }
+.sub { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; font-size: 0.95rem; }
+.sub label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+.sub input { accent-color: var(--brand); width: 1.05rem; height: 1.05rem; }
+.note summary { cursor: pointer; color: var(--muted); font-size: 0.88rem; width: fit-content; }
+.note[open] summary { margin-bottom: 0.4rem; }
+
+/* ------------------------------------------------ fondo */
+.list { display: grid; gap: 0.45rem; margin: 0; padding: 0; list-style: none; }
+.list li { display: grid; grid-template-columns: 1.4rem minmax(0, 1fr); gap: 0.6rem; align-items: start; font-size: 0.95rem; }
+.list li::before { content: "•"; color: var(--brand); text-align: center; font-weight: 700; }
+.list.check li::before { content: none; }
+.list.check input { margin: 0.25rem 0 0; width: 1.1rem; height: 1.1rem; accent-color: var(--brand); }
+.send { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.15rem; display: grid; gap: 0.8rem; }
+.send .row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.copied { color: var(--ok); font-weight: 600; font-size: 0.95rem; }
+.fallback { width: 100%; min-height: 12rem; font-family: var(--mono); font-size: 0.8rem; border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; background: var(--bg); }
+.confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; font-size: 0.95rem; }
+footer { color: var(--muted); font-size: 0.82rem; padding-block: 0 2.5rem; }
+
+@media (max-width: 520px) {
+  .bar .btn { padding: 0.55rem 0.75rem; }
+  .q { padding: 1rem 0.9rem; }
+}
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+
+</head>
+<body>
+<header class="head wrap">
+  <div class="eyebrow">DoctorGlass · gestionale</div>
+  <h1>Domande per il titolare</h1>
+  <p>Queste scelte servono prima di usare il gestionale in officina. Nessuna blocca il lavoro: dove c'è una <strong>proposta</strong>, è quella che usiamo finché non risponde.</p>
+  <div class="how">
+    <p><strong>Come rispondere:</strong> tocchi la risposta giusta, oppure scriva due righe nella nota. Se non lo sa, lo scriva nella nota.</p>
+    <p><strong>Alla fine:</strong> in fondo alla pagina c'è «Copia le risposte»; poi le incolli in un messaggio (WhatsApp o email) a chi cura il gestionale.</p>
+    <p class="urgenti">Le più urgenti: <a href="#d29">29</a>, <a href="#d30">30</a> e <a href="#d31">31</a> (decidono come si installa il computer dell'officina).</p>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="progress" aria-live="polite">
+      <span class="progress-label" id="progress-label">Risposte: <b>0</b> di 0</span>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <button class="btn" type="button" id="copy-top">Copia le risposte</button>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<footer class="wrap">
+  <p>Le risposte restano salvate su questo telefono o computer finché non le cancella; per mandarle bisogna copiarle e incollarle in un messaggio. Aggiornato il 19 ottobre 2026.</p>
+</footer>
+
+<script>
+const DATA = {"sezioni": [{"titolo": "Clienti, veicoli e documenti", "intro": [], "domande": [{"n": 1, "testo": "Muletti e mezzi senza targa: per riconoscerli basta la matricola (o il numero di serie)? E nei moduli, al posto della targa, scriviamo la matricola?", "spiega": ["Ha risposto «non ne ho idea»: finché non lo sa usiamo la matricola, anche nei moduli. Se un giorno capita un muletto e serve altro, ce lo dica."], "proposta": null, "opzioni": [{"testo": "Sì, la matricola, anche nei moduli", "piano": "Sì, la matricola, anche nei moduli", "campo": false, "hint": "Scriva qui"}, {"testo": "No, usiamo altro", "piano": "No, usiamo altro", "campo": true, "hint": "Che cosa usiamo al posto della matricola"}], "libero": null, "extra": null, "piano": "Muletti e mezzi senza targa: per riconoscerli basta la matricola (o il numero di serie)? E nei moduli, al posto della targa, scriviamo la matricola?", "urgente": false}, {"n": 2, "testo": "Lettura automatica del libretto: serve già a dicembre?", "spiega": ["La carta d'identità si legge già da sola; il libretto per ora si fotografa e marca, modello e targa si scrivono a mano."], "proposta": "dopo l'avvio in officina.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Serve da subito", "piano": "Serve da subito", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Lettura automatica del libretto: serve già a dicembre?", "urgente": false}, {"n": 3, "testo": "Per quanti anni vanno tenuti foto e documenti dei lavori?", "spiega": ["(se non lo sa, lo chieda al commercialista)"], "proposta": null, "opzioni": [], "libero": {"suffisso": "anni", "righe": 1}, "extra": null, "piano": "Per quanti anni vanno tenuti foto e documenti dei lavori?", "urgente": false}]}, {"titolo": "I moduli da firmare (privacy, cessione, denuncia)", "intro": [], "domande": [{"n": 4, "testo": "Privacy: va cambiato il testo del foglio?", "spiega": ["Il foglio che usate oggi è scritto <strong>per un lavoro solo<\/strong>: dice che i dati servono «per l'esecuzione dell'intervento di riparazione/sostituzione vetri auto del Suo veicolo». Il gestionale invece fa firmare la privacy <strong>una volta per cliente<\/strong> e la ripropone solo quando cambiate il testo. Con il foglio di oggi, a rigore, ogni nuovo lavoro dello stesso cliente richiederebbe una firma nuova.", "La versione «generale» (quella che stavate adattando) dice invece che vale anche per i lavori successivi, finché finalità e modalità non cambiano: basta una firma.", "Nel foglio di oggi ci sono anche due punti da far vedere al consulente: la ditta risulta titolare e, insieme, «responsabile del trattamento» di sé stessa; e si parla di sondaggi di soddisfazione via email."], "proposta": "la versione «generale», dopo il controllo del consulente. Finché il consulente non la conferma, usiamo quella di oggi.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Teniamo quella di oggi e la facciamo firmare a ogni lavoro", "piano": "Teniamo quella di oggi e la facciamo firmare a ogni lavoro", "campo": false, "hint": "Scriva qui"}, {"testo": "Solo quella nuova, da subito", "piano": "Solo quella nuova, da subito", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Privacy: va cambiato il testo del foglio?", "urgente": false}, {"n": 5, "testo": "La privacy è la stessa per i lavori convenzionati e non convenzionati?", "spiega": ["Oggi il gestionale la chiede solo per chiudere i lavori <strong>non<\/strong> convenzionati (insieme a cessione e denuncia). Ma l'informativa va data a ogni cliente di cui si tengono i dati, anche ai convenzionati."], "proposta": "stesso foglio per tutti; per i convenzionati il gestionale la propone ma non blocca la chiusura del lavoro.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Stesso foglio, obbligatorio anche per chiudere i convenzionati", "piano": "Stesso foglio, obbligatorio anche per chiudere i convenzionati", "campo": false, "hint": "Scriva qui"}, {"testo": "Per i convenzionati c'è un foglio diverso (ce lo mandate)", "piano": "Per i convenzionati c'è un foglio diverso (ce lo mandate)", "campo": false, "hint": "Scriva qui"}, {"testo": "Per i convenzionati non serve", "piano": "Per i convenzionati non serve", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "La privacy è la stessa per i lavori convenzionati e non convenzionati?", "urgente": false}, {"n": 6, "testo": "Privacy: si stampa una copia anche per il cliente?", "spiega": ["Il testo nuovo dice che il cliente «dichiara di aver ricevuto copia»."], "proposta": "sì, due copie (una firmata resta a voi, una va al cliente).", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "No, una copia sola", "piano": "No, una copia sola", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Privacy: si stampa una copia anche per il cliente?", "urgente": false}, {"n": 7, "testo": "Firma dell'officina («Firma riparatore» sulla cessione)", "spiega": ["I moduli che abbiamo ricevuto <strong>non hanno<\/strong> la firma dell'officina."], "proposta": "ci manda la firma (una foto della firma su un foglio bianco, ben illuminata) e il gestionale la stampa da sola su ogni cessione.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "No, la firmiamo a mano ogni volta", "piano": "No, la firmiamo a mano ogni volta", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Firma dell'officina («Firma riparatore» sulla cessione)", "urgente": false}, {"n": 8, "testo": "Sulla cessione del credito servono il numero e la data della fattura?", "spiega": ["Oggi il modulo riporta solo l'importo."], "proposta": null, "opzioni": [{"testo": "No, basta l'importo", "piano": "No, basta l'importo", "campo": false, "hint": "Scriva qui"}, {"testo": "Sì, numero e data della fattura", "piano": "Sì, numero e data della fattura", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Sulla cessione del credito servono il numero e la data della fattura?", "urgente": false}]}, {"titolo": "Lavori e calendario", "intro": ["Già deciso: il calendario mostra una settimana alla volta; l'officina lavora al massimo 2 auto insieme (appuntamenti che iniziano a meno di un'ora l'uno dall'altro); al terzo compare un avviso, ma si può confermare."], "domande": [{"n": 9, "testo": "Dopo quanti giorni un vetro ordinato e non ancora arrivato è «in ritardo»?", "spiega": ["Nella pagina iniziale l'ordine diventa rosso, così si chiama il fornitore."], "proposta": "dopo 5 giorni.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Un altro numero di giorni", "piano": "Un altro numero di giorni", "campo": true, "hint": "Dopo quanti giorni"}], "libero": null, "extra": null, "piano": "Dopo quanti giorni un vetro ordinato e non ancora arrivato è «in ritardo»?", "urgente": false}, {"n": 10, "testo": "Quali giorni mostra il calendario?", "spiega": [], "proposta": "da lunedì a sabato; la domenica compare solo se c'è un appuntamento.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Da lunedì a venerdì", "piano": "Da lunedì a venerdì", "campo": false, "hint": "Scriva qui"}, {"testo": "Tutti i giorni", "piano": "Tutti i giorni", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Quali giorni mostra il calendario?", "urgente": false}, {"n": 11, "testo": "Un lavoro «fuori sede» conta tra le 2 auto in officina?", "spiega": ["Fuori sede l'auto non entra in officina, ma un operaio è fuori."], "proposta": "sì, conta (gli operai sono quelli).", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "No, non conta", "piano": "No, non conta", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Un lavoro «fuori sede» conta tra le 2 auto in officina?", "urgente": false}, {"n": 12, "testo": "Dal calendario si può fissare un appuntamento cliccando su un orario libero?", "spiega": [], "proposta": "sì: si sceglie un lavoro già aperto senza appuntamento, oppure si apre un lavoro nuovo con quella data e ora già scritte.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "No, gli appuntamenti si fissano solo dalla scheda del lavoro", "piano": "No, gli appuntamenti si fissano solo dalla scheda del lavoro", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Dal calendario si può fissare un appuntamento cliccando su un orario libero?", "urgente": false}]}, {"titolo": "Fatture e pagamenti", "intro": ["Già deciso: per ogni lavoro un elenco di pagamenti (data, importo, metodo, chi paga: cliente o assicurazione), e il gestionale mostra quanto manca rispetto alla fattura."], "domande": [{"n": 13, "testo": "Con quale programma fa le fatture?", "spiega": [], "proposta": null, "opzioni": [], "libero": {"suffisso": "", "righe": 1}, "extra": {"testo": "Le farebbe comodo che il gestionale le passasse i dati del cliente e del lavoro?", "opzioni": ["Sì", "No"]}, "piano": "Con quale programma fa le fatture?", "urgente": false}, {"n": 14, "testo": "Metodi di pagamento: bastano contanti, carta e bonifico?", "spiega": [], "proposta": null, "opzioni": [{"testo": "Sì", "piano": "Sì", "campo": false, "hint": "Scriva qui"}, {"testo": "Aggiungere altri metodi", "piano": "Aggiungere altri metodi", "campo": true, "hint": "Quali (per esempio assegno)"}], "libero": null, "extra": null, "piano": "Metodi di pagamento: bastano contanti, carta e bonifico?", "urgente": false}, {"n": 15, "testo": "Gli operai vedono i pagamenti?", "spiega": ["Gli operai vedono già prezzi e fattura; i pagamenti finora erano solo del gestore."], "proposta": "gli operai vedono solo «pagato» oppure «da incassare … €», senza poter registrare niente.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Vedono tutto l'elenco dei pagamenti", "piano": "Vedono tutto l'elenco dei pagamenti", "campo": false, "hint": "Scriva qui"}, {"testo": "Non vedono niente dei pagamenti", "piano": "Non vedono niente dei pagamenti", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Gli operai vedono i pagamenti?", "urgente": false}, {"n": 16, "testo": "Si può registrare un acconto prima che ci sia la fattura?", "spiega": [], "proposta": "sì; il gestionale scrive «pagati … €, fattura da inserire».", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "No, i pagamenti solo dopo la fattura", "piano": "No, i pagamenti solo dopo la fattura", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Si può registrare un acconto prima che ci sia la fattura?", "urgente": false}, {"n": 17, "testo": "Si può chiudere un lavoro che non è ancora pagato del tutto?", "spiega": ["Le assicurazioni pagano spesso dopo settimane."], "proposta": "sì, la chiusura non aspetta i pagamenti; il lavoro resta nella pagina iniziale sotto «Da incassare» finché non è pagato.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "No, si chiude solo quando è pagato tutto", "piano": "No, si chiude solo quando è pagato tutto", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Si può chiudere un lavoro che non è ancora pagato del tutto?", "urgente": false}, {"n": 18, "testo": "Pagamento dell'assicurazione: serve scrivere un riferimento (numero del bonifico, della liquidazione)?", "spiega": [], "proposta": "una nota libera accanto al pagamento, facoltativa.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Serve un campo apposta, obbligatorio", "piano": "Serve un campo apposta, obbligatorio", "campo": true, "hint": "Che cosa ci va scritto"}], "libero": null, "extra": null, "piano": "Pagamento dell'assicurazione: serve scrivere un riferimento (numero del bonifico, della liquidazione)?", "urgente": false}, {"n": 19, "testo": "Dopo quanti giorni un lavoro non pagato è «in ritardo»?", "spiega": ["(diventa rosso in «Da incassare»)"], "proposta": "30 giorni dalla fattura se paga il cliente, 90 se paga l'assicurazione.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Altri tempi", "piano": "Altri tempi", "campo": true, "hint": "Cliente … giorni, assicurazione … giorni"}], "libero": null, "extra": null, "piano": "Dopo quanti giorni un lavoro non pagato è «in ritardo»?", "urgente": false}]}, {"titolo": "Auto di cortesia", "intro": ["Già deciso: per ora una, poi forse altre; si registrano quale auto, cliente, data e ora di consegna e di rientro."], "domande": [{"n": 20, "testo": "Chi registra la consegna e il rientro dell'auto di cortesia?", "spiega": [], "proposta": "gestore e operai; l'elenco delle auto lo cambia solo il gestore.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Solo il gestore", "piano": "Solo il gestore", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Chi registra la consegna e il rientro dell'auto di cortesia?", "urgente": false}, {"n": 21, "testo": "L'auto di cortesia si dà sempre per un lavoro?", "spiega": [], "proposta": "si presta dalla scheda del lavoro (cliente già scritto); in casi rari anche senza lavoro.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Sempre e solo con un lavoro", "piano": "Sempre e solo con un lavoro", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "L'auto di cortesia si dà sempre per un lavoro?", "urgente": false}, {"n": 22, "testo": "Alla consegna e al rientro si annotano i chilometri e il carburante?", "spiega": [], "proposta": null, "opzioni": [{"testo": "Sì, chilometri e carburante", "piano": "Sì, chilometri e carburante", "campo": false, "hint": "Scriva qui"}, {"testo": "Solo i chilometri", "piano": "Solo i chilometri", "campo": false, "hint": "Scriva qui"}, {"testo": "No, basta una nota libera", "piano": "No, basta una nota libera", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Alla consegna e al rientro si annotano i chilometri e il carburante?", "urgente": false}, {"n": 23, "testo": "Serve una foto della patente del cliente o un modulo da fargli firmare (comodato d'uso)?", "spiega": ["Se avete già un modulo, mandatecelo: lo precompiliamo come gli altri."], "proposta": null, "opzioni": [{"testo": "Sì, la patente", "piano": "Sì, la patente", "campo": false, "hint": "Scriva qui"}, {"testo": "Sì, un modulo da firmare (lo mandiamo)", "piano": "Sì, un modulo da firmare (lo mandiamo)", "campo": false, "hint": "Scriva qui"}, {"testo": "No, niente", "piano": "No, niente", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Serve una foto della patente del cliente o un modulo da fargli firmare (comodato d'uso)?", "urgente": false}, {"n": 24, "testo": "Nella pagina iniziale si vede quale auto di cortesia è fuori, da chi, e da quanti giorni?", "spiega": [], "proposta": "sì, con il telefono del cliente.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Non serve", "piano": "Non serve", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Nella pagina iniziale si vede quale auto di cortesia è fuori, da chi, e da quanti giorni?", "urgente": false}]}, {"titolo": "Fascicolo finale (il PDF per l'assicurazione)", "intro": ["Già deciso: si crea con un pulsante quando c'è tutto; ordine: foto prima, durante, finale, denuncia, cessione, fattura, polizza, documento d'identità, libretto, ricalibratura; la privacy no."], "domande": [{"n": 25, "testo": "Il portale delle assicurazioni ha un limite alla grandezza del file?", "spiega": ["Le foto pesano: se il limite è basso le rimpiccioliamo di più."], "proposta": null, "opzioni": [{"testo": "Non c'è limite / non lo so", "piano": "Non c'è limite / non lo so", "campo": false, "hint": "Scriva qui"}, {"testo": "Sì, c'è un limite", "piano": "Sì, c'è un limite", "campo": true, "hint": "Quanti MB al massimo"}], "libero": null, "extra": null, "piano": "Il portale delle assicurazioni ha un limite alla grandezza del file?", "urgente": false}, {"n": 26, "testo": "Chi crea il fascicolo?", "spiega": [], "proposta": "solo il gestore.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Anche gli operai", "piano": "Anche gli operai", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Chi crea il fascicolo?", "urgente": false}, {"n": 27, "testo": "Se dopo aver creato il fascicolo si cambia un documento, cosa succede?", "spiega": [], "proposta": "il gestionale avvisa «il fascicolo non è aggiornato» e si ricrea con lo stesso pulsante; si tiene solo l'ultimo.", "opzioni": [{"testo": "Va bene la proposta", "piano": "Va bene la proposta", "campo": false, "hint": "Scriva qui"}, {"testo": "Teniamo anche i fascicoli vecchi", "piano": "Teniamo anche i fascicoli vecchi", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Se dopo aver creato il fascicolo si cambia un documento, cosa succede?", "urgente": false}]}, {"titolo": "Avvio in officina", "intro": ["Già deciso: copie di sicurezza di tutto (dati, foto e documenti) ogni notte, tenute per un mese più una al mese per un anno."], "domande": [{"n": 28, "testo": "Da che numero partono i lavori?", "spiega": ["Se oggi avete un registro (quaderno, altro programma), il gestionale può continuare dal vostro numero."], "proposta": "dal numero dopo l'ultimo del vostro registro.", "opzioni": [{"testo": "Da un numero preciso", "piano": "Da un numero preciso", "campo": true, "hint": "Da quale numero"}, {"testo": "Da 1", "piano": "Da 1", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Da che numero partono i lavori?", "urgente": false}, {"n": 29, "testo": "Il gestionale serve anche fuori dall'officina (lavori fuori sede, da casa, dal telefono con i dati mobili)?", "spiega": ["Se sì, lo rendiamo raggiungibile da internet in modo sicuro (senza aprire porte sul router)."], "proposta": null, "opzioni": [{"testo": "Sì", "piano": "Sì", "campo": false, "hint": "Scriva qui"}, {"testo": "No, solo dalla rete dell'officina", "piano": "No, solo dalla rete dell'officina", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Il gestionale serve anche fuori dall'officina (lavori fuori sede, da casa, dal telefono con i dati mobili)?", "urgente": true}, {"n": 30, "testo": "Avete già un dominio (per esempio doctorglass.it)? Chi lo gestisce?", "spiega": ["Serve per l'indirizzo del gestionale (per esempio gestionale.doctorglass.it) e per il certificato di sicurezza."], "proposta": null, "opzioni": [{"testo": "Sì, abbiamo un dominio", "piano": "Sì, abbiamo un dominio", "campo": true, "hint": "Quale dominio, e chi lo gestisce"}, {"testo": "No, ne compriamo uno (pochi euro all'anno)", "piano": "No, ne compriamo uno (pochi euro all'anno)", "campo": false, "hint": "Scriva qui"}], "libero": null, "extra": null, "piano": "Avete già un dominio (per esempio doctorglass.it)? Chi lo gestisce?", "urgente": true}, {"n": 31, "testo": "Il computer dell'officina: quale?", "spiega": ["Serve sempre acceso, con almeno 16 GB di RAM e un disco SSD da 500 GB (le foto occupano spazio). Consigliamo anche un gruppo di continuità, perché un blackout spegne il computer di colpo."], "proposta": null, "opzioni": [{"testo": "Ne compriamo uno nuovo", "piano": "Ne compriamo uno nuovo", "campo": true, "hint": "Budget in euro"}, {"testo": "Usiamo un computer che abbiamo già", "piano": "Usiamo un computer che abbiamo già", "campo": true, "hint": "Quale (marca, modello, RAM)"}], "libero": null, "extra": {"testo": "Gruppo di continuità", "opzioni": ["Sì", "No"]}, "piano": "Il computer dell'officina: quale?", "urgente": true}, {"n": 32, "testo": "Quanti operai useranno il gestionale, e con quali nomi?", "spiega": ["(per creare gli account)"], "proposta": null, "opzioni": [], "libero": {"suffisso": "", "righe": 3}, "extra": null, "piano": "Quanti operai useranno il gestionale, e con quali nomi?", "urgente": false}, {"n": 33, "testo": "Gli operai usano il telefono personale o uno dell'officina?", "spiega": ["Per il telefono personale proponiamo che l'accesso scada dopo 12 ore (poi si rimette la password)."], "proposta": null, "opzioni": [{"testo": "Personale: va bene 12 ore", "piano": "Personale: va bene 12 ore", "campo": false, "hint": "Scriva qui"}, {"testo": "Personale, ma l'accesso dura un altro numero di ore", "piano": "Personale, ma l'accesso dura un altro numero di ore", "campo": true, "hint": "Quante ore"}, {"testo": "Dell'officina: l'accesso può durare di più", "piano": "Dell'officina: l'accesso può durare di più", "campo": true, "hint": "Quanti giorni"}], "libero": null, "extra": null, "piano": "Gli operai usano il telefono personale o uno dell'officina?", "urgente": false}]}], "consegnare": {"intro": [], "items": ["La <strong>firma dell'officina<\/strong> su un foglio bianco, fotografata o scansionata (domanda 7): verrà stampata in automatico su ogni cessione.", "La versione definitiva del foglio della <strong>privacy<\/strong>, dopo il controllo del consulente (domanda 4).", "Se c'è, il modulo per l'<strong>auto di cortesia<\/strong> (domanda 23)."]}, "scelte": {"intro": ["Non serve rispondere: le scriviamo perché le sappiate. Se qualcosa non va, ditecelo."], "items": ["<strong>Tema scuro:<\/strong> segue l'impostazione del telefono o del PC, con un interruttore per cambiarlo.", "<strong>Liste e pagina iniziale:<\/strong> si aggiornano da sole ogni minuto.", "<strong>Pagamento più alto del dovuto:<\/strong> si può registrare, ma il gestionale lo segnala.", "<strong>Calendario sul telefono:<\/strong> un giorno alla volta, scorrendo; sul PC la settimana intera.", "<strong>Data sui moduli:<\/strong> quella del giorno in cui si stampano (già deciso).", "<strong>Ricevute:<\/strong> nessuna (già deciso)."]}};
+const KEY = 'doctorglass-domande-v1';
+let state = { scelte: {}, dettagli: {}, liberi: {}, extra: {}, note: {}, consegnare: {}, obiezioni: '' };
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (saved && typeof saved === 'object') state = Object.assign(state, saved);
+} catch (e) { /* niente: si parte vuoti */ }
+
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* storage non disponibile */ }
+}
+
+const allQ = DATA.sezioni.flatMap((s) => s.domande);
+
+function answered(q) {
+  const n = q.n;
+  if (q.libero) return !!(state.liberi[n] || '').trim() || !!(state.note[n] || '').trim();
+  return state.scelte[n] !== undefined || state.extra[n] !== undefined || !!(state.note[n] || '').trim();
+}
+
+function el(tag, attrs = {}, html) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v; else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v);
+  }
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+
+function render() {
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  DATA.sezioni.forEach((sec, si) => {
+    const s = el('section', { 'aria-labelledby': 'sec' + si });
+    const head = el('div', { class: 'sec-head' });
+    head.append(el('h2', { id: 'sec' + si }, (si + 1) + '. ' + sec.titolo), el('span', { class: 'sec-count', 'data-sec': si }));
+    s.append(head);
+    sec.intro.forEach((t) => s.append(el('p', { class: 'sec-intro' }, t)));
+    sec.domande.forEach((q) => s.append(renderQ(q)));
+    main.append(s);
+  });
+  main.append(renderBottom());
+  refresh();
+}
+
+function renderQ(q) {
+  const n = q.n;
+  const box = el('article', { class: 'q', id: 'd' + n });
+  const top = el('div', { class: 'q-top' });
+  top.append(el('span', { class: 'q-num', 'aria-hidden': 'true' }, String(n)),
+    el('h3', { class: 'q-title' }, q.testo + (q.urgente ? '<span class="badge">Urgente</span>' : '')));
+  box.append(top);
+  const body = el('div', { class: 'q-body' });
+  q.spiega.forEach((t, i) => body.append(el('p', { class: i === 0 && t.startsWith('(') ? 'soft' : '' }, t)));
+  if (q.proposta) body.append(el('div', { class: 'proposal' }, '<b>Proposta</b>' + q.proposta));
+
+  if (q.libero) {
+    const id = 'libero-' + n;
+    const row = el('div', { class: 'free-row' });
+    const input = q.libero.righe > 1
+      ? el('textarea', { id, class: 'free', rows: 3, 'aria-label': 'Risposta alla domanda ' + n })
+      : el('input', { id, class: 'free', type: 'text', 'aria-label': 'Risposta alla domanda ' + n });
+    if (q.libero.righe > 1) input.style.maxWidth = '100%';
+    input.value = state.liberi[n] || '';
+    input.addEventListener('input', () => { state.liberi[n] = input.value; save(); refresh(); });
+    row.append(input);
+    if (q.libero.suffisso) row.append(el('span', {}, q.libero.suffisso));
+    body.append(row);
+  }
+
+  if (q.opzioni.length) {
+    const fs = el('fieldset', { class: 'opts' });
+    fs.append(el('legend', { class: 'sr', style: 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)' }, 'Risposta alla domanda ' + n));
+    q.opzioni.forEach((o, i) => {
+      const id = `o-${n}-${i}`;
+      const lab = el('label', { class: 'opt', for: id });
+      const radio = el('input', { type: 'radio', name: 'q' + n, id, value: i });
+      radio.checked = state.scelte[n] === i;
+      const lbl = el('span', { class: 'lbl' }, o.testo);
+      lab.append(radio, lbl);
+      if (o.campo) {
+        const d = el('input', { type: 'text', class: 'detail', id: `det-${n}-${i}`, placeholder: o.hint, 'aria-label': o.hint });
+        d.value = (state.dettagli[n] && state.dettagli[n][i]) || '';
+        d.hidden = !radio.checked;
+        d.addEventListener('input', () => {
+          state.dettagli[n] = state.dettagli[n] || {};
+          state.dettagli[n][i] = d.value; save();
+        });
+        lbl.append(d);
+      }
+      radio.addEventListener('change', () => {
+        state.scelte[n] = i; save();
+        fs.querySelectorAll('.detail').forEach((x) => { x.hidden = x.id !== `det-${n}-${i}`; });
+        const d = document.getElementById(`det-${n}-${i}`);
+        if (d) d.focus();
+        refresh();
+      });
+      fs.append(lab);
+    });
+    body.append(fs);
+  }
+
+  if (q.extra) {
+    const sub = el('div', { class: 'sub', role: 'group', 'aria-label': q.extra.testo.replace(/<[^>]+>/g, '') });
+    sub.append(el('span', {}, q.extra.testo));
+    q.extra.opzioni.forEach((o, i) => {
+      const id = `x-${n}-${i}`;
+      const lab = el('label', { for: id });
+      const r = el('input', { type: 'radio', name: 'x' + n, id, value: i });
+      r.checked = state.extra[n] === i;
+      r.addEventListener('change', () => { state.extra[n] = i; save(); });
+      lab.append(r, document.createTextNode(o));
+      sub.append(lab);
+    });
+    body.append(sub);
+  }
+
+  const note = el('details', { class: 'note' });
+  if ((state.note[n] || '').trim()) note.open = true;
+  note.append(el('summary', {}, 'Aggiungi una nota'));
+  const ta = el('textarea', { id: 'nota-' + n, rows: 2, 'aria-label': 'Nota alla domanda ' + n, placeholder: 'Per esempio: «non lo so», oppure come la vuole' });
+  ta.value = state.note[n] || '';
+  ta.addEventListener('input', () => { state.note[n] = ta.value; save(); refresh(); });
+  note.append(ta);
+  body.append(note);
+  box.append(body);
+  return box;
+}
+
+function renderBottom() {
+  const wrap = el('div', { style: 'display:grid;gap:2rem' });
+  if (DATA.consegnare) {
+    const s = el('section', { 'aria-labelledby': 'cons' });
+    const h = el('div', { class: 'sec-head' });
+    h.append(el('h2', { id: 'cons' }, 'Cose da consegnare'));
+    s.append(h);
+    const ul = el('ul', { class: 'list check' });
+    DATA.consegnare.items.forEach((t, i) => {
+      const li = el('li');
+      const id = 'cons-' + i;
+      const c = el('input', { type: 'checkbox', id });
+      c.checked = !!state.consegnare[i];
+      c.addEventListener('change', () => { state.consegnare[i] = c.checked; save(); });
+      li.append(c, el('label', { for: id }, t));
+      ul.append(li);
+    });
+    s.append(ul);
+    wrap.append(s);
+  }
+  if (DATA.scelte) {
+    const s = el('section', { 'aria-labelledby': 'scelte' });
+    const h = el('div', { class: 'sec-head' });
+    h.append(el('h2', { id: 'scelte' }, 'Scelte che facciamo noi'));
+    s.append(h);
+    DATA.scelte.intro.forEach((t) => s.append(el('p', { class: 'sec-intro' }, t)));
+    const ul = el('ul', { class: 'list' });
+    DATA.scelte.items.forEach((t) => ul.append(el('li', {}, '<span>' + t + '</span>')));
+    s.append(ul);
+    const ta = el('textarea', { id: 'obiezioni', class: 'obiezioni', rows: 2, placeholder: 'Se qualcosa non va, lo scriva qui', 'aria-label': 'Obiezioni alle scelte' });
+    ta.value = state.obiezioni || '';
+    ta.addEventListener('input', () => { state.obiezioni = ta.value; save(); });
+    s.append(ta);
+    wrap.append(s);
+  }
+  const send = el('section', { class: 'send', id: 'manda', 'aria-labelledby': 'manda-t' });
+  send.append(el('h2', { id: 'manda-t', style: 'font-size:1.15rem' }, 'Mandare le risposte'),
+    el('p', {}, 'Tocchi «Copia le risposte», poi apra WhatsApp o l\'email e incolli il testo in un messaggio a chi cura il gestionale. Si può mandare anche a metà: le domande senza risposta restano con la proposta.'));
+  const row = el('div', { class: 'row' });
+  const b = el('button', { class: 'btn', type: 'button', id: 'copy-bottom' }, 'Copia le risposte');
+  const reset = el('button', { class: 'btn secondary', type: 'button', id: 'reset' }, 'Cancella tutte le risposte');
+  row.append(b, reset);
+  send.append(row, el('p', { class: 'copied', id: 'copied', hidden: true }, 'Copiate. Ora le incolli in un messaggio.'));
+  const fb = el('textarea', { class: 'fallback', id: 'fallback', readonly: true, hidden: true, 'aria-label': 'Testo delle risposte' });
+  send.append(el('p', { id: 'fallback-hint', hidden: true, class: 'sec-intro' }, 'Il telefono non ha permesso di copiare da solo: tenga premuto sul testo qui sotto, «Seleziona tutto» e «Copia».'), fb);
+  const conf = el('div', { class: 'confirm', id: 'confirm', hidden: true });
+  conf.append(el('span', {}, 'Cancellare tutte le risposte date?'));
+  const yes = el('button', { class: 'btn', type: 'button' }, 'Sì, cancella');
+  const no = el('button', { class: 'btn secondary', type: 'button' }, 'No');
+  conf.append(yes, no);
+  send.append(conf);
+  b.addEventListener('click', copy);
+  reset.addEventListener('click', () => { conf.hidden = false; });
+  no.addEventListener('click', () => { conf.hidden = true; });
+  yes.addEventListener('click', () => {
+    state = { scelte: {}, dettagli: {}, liberi: {}, extra: {}, note: {}, consegnare: {}, obiezioni: '' };
+    save(); render();
+  });
+  wrap.append(send);
+  return wrap;
+}
+
+function refresh() {
+  const done = allQ.filter(answered).length;
+  document.getElementById('progress-label').innerHTML = `Risposte: <b>${done}</b> di ${allQ.length}`;
+  document.getElementById('fill').style.width = (allQ.length ? (100 * done) / allQ.length : 0) + '%';
+  allQ.forEach((q) => { const b = document.getElementById('d' + q.n); if (b) b.classList.toggle('done', answered(q)); });
+  DATA.sezioni.forEach((sec, si) => {
+    const c = document.querySelector(`[data-sec="${si}"]`);
+    if (c) c.textContent = `${sec.domande.filter(answered).length} di ${sec.domande.length}`;
+  });
+}
+
+function text() {
+  const oggi = new Date().toLocaleDateString('it-IT');
+  const out = [`Risposte del titolare alle domande sul gestionale (${oggi})`, ''];
+  const vuote = [];
+  allQ.forEach((q) => {
+    const n = q.n;
+    const righe = [];
+    if (q.libero && (state.liberi[n] || '').trim()) righe.push(state.liberi[n].trim() + (q.libero.suffisso ? ' ' + q.libero.suffisso : ''));
+    if (state.scelte[n] !== undefined && q.opzioni[state.scelte[n]]) {
+      let r = q.opzioni[state.scelte[n]].piano;
+      if (r === 'Va bene la proposta' && q.proposta) r += ': ' + q.proposta.replace(/<[^>]+>/g, '');
+      const d = state.dettagli[n] && state.dettagli[n][state.scelte[n]];
+      if (d && d.trim()) r += ' → ' + d.trim();
+      righe.push(r);
+    }
+    if (q.extra && state.extra[n] !== undefined) righe.push(q.extra.testo.replace(/<[^>]+>/g, '') + ': ' + q.extra.opzioni[state.extra[n]]);
+    if ((state.note[n] || '').trim()) righe.push('Nota: ' + state.note[n].trim());
+    if (!righe.length) { vuote.push(n); return; }
+    out.push(`${n}. ${q.piano}`);
+    righe.forEach((r) => out.push('   ' + r));
+  });
+  const cons = (DATA.consegnare ? DATA.consegnare.items : []).map((t, i) => [t.replace(/<[^>]+>/g, ''), state.consegnare[i]]).filter((x) => x[1]);
+  if (cons.length) { out.push('', 'Già consegnato:'); cons.forEach((c) => out.push('   - ' + c[0])); }
+  if ((state.obiezioni || '').trim()) out.push('', 'Obiezioni alle scelte: ' + state.obiezioni.trim());
+  if (vuote.length) out.push('', 'Senza risposta (resta la proposta): ' + vuote.join(', '));
+  return out.join('\n');
+}
+
+async function copy() {
+  const t = text();
+  const ok = document.getElementById('copied');
+  const fb = document.getElementById('fallback');
+  const hint = document.getElementById('fallback-hint');
+  try {
+    await navigator.clipboard.writeText(t);
+    ok.hidden = false; fb.hidden = true; hint.hidden = true;
+  } catch (e) {
+    ok.hidden = true; fb.hidden = false; hint.hidden = false; fb.value = t;
+    fb.focus(); fb.select();
+  }
+  document.getElementById('manda').scrollIntoView({ block: 'nearest' });
+}
+
+document.getElementById('copy-top').addEventListener('click', copy);
+render();
+</script>
+
+</body>
+</html>
